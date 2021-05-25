@@ -2,8 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\RegisterForm;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -116,13 +118,20 @@ class SiteController extends Controller
         ]);
     }
 
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
+    public function actionRegister()
     {
-        return $this->render('about');
+        $model = new RegisterForm();
+        $registerParams = Yii::$app->request->post('RegisterForm');
+//        print_r(\Yii::$app->getSecurity()->generatePasswordHash('test'));exit;
+        if (
+            $model->load(Yii::$app->request->post())
+            && $model->register($registerParams)
+        ) {
+            return $this->redirect(['/site/login']);
+        }
+
+        return $this->render('register', [
+            'model' => $model
+        ]);
     }
 }
