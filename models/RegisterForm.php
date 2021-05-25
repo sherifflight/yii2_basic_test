@@ -29,10 +29,10 @@ class RegisterForm extends Model
 
     /**
      * @param array $params
-     * @return bool
+     * @return User|bool
      * @throws Exception
      */
-    public function register(array $params): bool
+    public function register(array $params)
     {
         if ($this->validate()) {
             $user = new User();
@@ -40,9 +40,10 @@ class RegisterForm extends Model
             $params['password'] = Yii::$app->getSecurity()->generatePasswordHash($params['password']);
 
             $user->attributes = $params;
+            $user->generateAuthKey();
             $user->save();
 
-            return true;
+            return $user;
         }
 
         return false;
