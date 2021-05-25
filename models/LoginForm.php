@@ -22,13 +22,14 @@ class LoginForm extends Model
 
 
     /**
-     * @return array the validation rules.
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             // username and password are both required
             [['email', 'password'], 'required'],
+            ['email', 'email'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
@@ -37,30 +38,25 @@ class LoginForm extends Model
     }
 
     /**
-     * Logs in a user using the provided username and password.
-     * @return bool whether the user is logged in successfully
+     * @return bool
      */
-    public function login()
+    public function login() : bool
     {
-        $user = UserModel::findOne(['email' => $this->email]);
-        if ($user && $user->password) {
-            if ($this->validate() && Yii::$app->getSecurity()->validatePassword($this->password, $user->password)){
-                return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
-            }
+        if ($this->validate()) {
+            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
         }
-//        if ($this->validate()) {
-//            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
-//        }
+
         return false;
     }
+
 
     /**
      * @return UserModel|bool|null
      */
     public function getUser()
     {
-        if ($this->_user === false && $user = UserModel::findOne($this->email)) {
-            $this->_user = $user;
+        if ($this->_user === false) {
+            $this->_user = UserModel::findOne(['email' => $this->email]);
         }
 
         return $this->_user;
