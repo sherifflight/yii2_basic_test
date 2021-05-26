@@ -24,6 +24,7 @@ class GeoService
      */
     public function getUserCityByIpAddress(string $ipAddress) : ?string
     {
+        $cityName = null;
         $response = $this->client->request(
             self::GET_REQUEST,
             'http://api.sypexgeo.net/json/' . $ipAddress
@@ -32,7 +33,16 @@ class GeoService
         if ($response->getStatusCode() !== 200) {
             return null;
         }
+        try {
+            $content = $response->getBody()->getContents();
+            /** @noinspection PhpComposerExtensionStubsInspection */
+            $decodedContent = json_decode($content, true);
 
-        return $response->getBody()->getContents();
+            $cityName = $decodedContent['city']['name_ru'];
+        } catch (\Exception $exception) {
+            return null;
+        }
+
+        return $cityName;
     }
 }
