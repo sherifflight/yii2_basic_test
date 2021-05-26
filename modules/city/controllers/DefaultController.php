@@ -2,10 +2,12 @@
 
 namespace app\modules\city\controllers;
 
+use app\modules\city\models\City;
 use phpDocumentor\Reflection\Types\String_;
 use yii\web\Controller;
 use yii\web\ErrorAction;
 use yii\captcha\CaptchaAction;
+use yii\web\NotFoundHttpException;
 
 /**
  * Default controller for the `city` module
@@ -37,6 +39,25 @@ class DefaultController extends Controller
      */
     public function actionIndex() : string
     {
-        return $this->render('index');
+        $cities = City::getAllWithFeedback();
+        return $this->render('index', [
+            'cities' => $cities
+        ]);
+    }
+
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionView(int $id) : string
+    {
+        if (!$city = City::findOne(['id' => $id])) {
+            throw new NotFoundHttpException("City with ID: $id does not exist.");
+        }
+
+        return $this->render('view', [
+            'city' => $city
+        ]);
     }
 }
