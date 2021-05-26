@@ -25,6 +25,12 @@ $config = [
             'identityClass' => 'app\modules\user\models\User',
             'enableAutoLogin' => true,
         ],
+        'session' => [
+            'class' => 'yii\web\Session',
+            'cookieParams' => ['httponly' => true, 'lifetime' => 2 * 60 * 60],
+            'timeout' => 2 * 60 * 60,
+            'useCookies' => true
+        ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
@@ -45,14 +51,12 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
