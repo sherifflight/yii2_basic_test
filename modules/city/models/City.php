@@ -22,4 +22,22 @@ class City  extends ActiveRecord
     {
         return '{{cities}}';
     }
+
+    /**
+     * @param string $name
+     * @param array $with
+     * @return City|null
+     */
+    public static function getCityByName(string $name, array $with = []) : ?City
+    {
+        return self::findOne(['name' => $name]);
+    }
+
+    /**
+     * @return array|ActiveRecord[]
+     */
+    public static function getAllWithFeedback(): array
+    {
+        return self::find()->all();
+    }
 }
